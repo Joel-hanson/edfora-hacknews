@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Hacker News</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js" preload></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: auto;
+            background-image: url(sayagata-400px.png);
+            font-family: Roboto;
+        }
+        
+        .searchtab {
+            display: none;
+            background: #6a1b9a;
+        }
+        i{
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+    <nav class="purple darken-3">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo center">Hacker News</a>
+            <a class="button-collapse right" onclick="shownav()"><i  alt="search" class="material-icons">search</i></a>
+            <a class="button-collapse left"><i  ng-click="attribute = !attribute" ng-init="sortbyw='num_points'" class="material-icons" alt="search">filter_list</i></a>
+            <a class="button-collapse left"><i ng-click="attribute = !attribute" ng-init="sortbyw='created_at'" class="material-icons" alt="search">watch</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li style="margin-right:12px;">
+                    <i class="material-icons" onclick="shownav()" alt="search_icon">search</i>
+                </li>
+                <li style="margin-right:12px;">
+                    <i class="material-icons" ng-click="attribute = !attribute" ng-init="sortbyw='num_points'" alt="search_icon">filter_list</i>
+                </li>
+                <li style="margin-right:12px;">
+                    <i filter_list ng-click="attribute = !attribute" ng-init="sortbyw='created_at'" alt="search_icon">watch</i>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="searchtab">
+        <div class="row">
+            <div class="row">
+                <div class="input-field col s12 m12 l12">
+                    <input type="text" id="autocomplete-input" ng-model="searchString" class=" autocomplete">
+                    <label for="autocomplete-input white">Search Here</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="divcontainer">
+            <div ng-repeat="x in myWelcome  | searchFor:searchString | orderBy:sortbyw:attribute" ng-if="$index > 0">
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        <div class="card purple darken-1">
+                            <div class="card-content black-text">
+                                <span class="card-title">{{x.title}}</span><sub style="font-family: monospace">-{{x.author}}</sub> <br><sub>{{x.created_at}}</sub>
+                                <a class="btn-floating halfway-fab waves-effect waves-light red" href="{{x.url}}" target="_blank"><i class="material-icons">link</i></a>
+                            </div>
+                            <div class="card-action small">
+                                <div class="row">
+                                    <div class="col s6 m6 l6">
+                                        <i class="material-icons"alt="uparrow">arrow_upward</i>
+                                        <span>{{x.num_points}}</span>
+                                    </div>
+                                    <div class="col s6 m6 l6">
+                                        <i class="material-icons"alt="comment">comment</i>
+                                        <span>{{x.num_comments}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js" preload></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+<script defer>
+    var x = 0;
+    
+
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function ($scope, $http) {
+       
+        $http.get("http://starlord.hackerearth.com/edfora/hackernews")
+            .then(function (response) {
+                $scope.myWelcome = response.data;
+                data = response.data;
+                localStorage.setItem('testObject', response.data);
+            });
+   
+   
+     });
+    function shownav() {
+        console.log("asa");
+        $(".searchtab").show();
+
+        if (x == 0) {
+            $(".searchtab").show();
+            x = 1;
+        } else {
+            $(".searchtab").hide();
+
+            x = 0;
+        }
+    }
+    app.filter('searchFor', function () {
+        return function (arr, searchString) {
+            if (!searchString) {
+                return arr;
+            }
+            var result = [];
+            searchString = searchString.toLowerCase();
+            angular.forEach(arr, function (item) {
+                if (item.title.toLowerCase().indexOf(searchString) !== -1) {
+                    result.push(item);
+                }
+            });
+            return result;
+        };
+    });
+</script>
+
+</html>
