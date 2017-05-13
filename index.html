@@ -96,7 +96,7 @@
     var app = angular.module('myApp', []);
     app.controller('myCtrl', function ($scope, $http) {
        
-        $http.get("https://github.com/Joel-hanson/edfora-hacknews/blob/master/hacknews.json")
+        $http.get("/hacknews.json")
             .then(function (response) {
                 $scope.myWelcome = response.data;
                 data = response.data;
