@@ -96,7 +96,7 @@
     var app = angular.module('myApp', []);
     app.controller('myCtrl', function ($scope, $http) {
        
-        $http.get("http://starlord.hackerearth.com/edfora/hackernews")
+        $http.get("https://starlord.hackerearth.com/edfora/hackernews")
             .then(function (response) {
                 $scope.myWelcome = response.data;
                 data = response.data;
